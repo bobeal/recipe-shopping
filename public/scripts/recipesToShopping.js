@@ -21,10 +21,16 @@ var AggregatedShoppingList = React.createClass({
       selectedRecipes: ['quiche-lorraine']
     };
   },
+  onUserInput: function(recipeKey) {
+    this.state.selectedRecipes.push(recipeKey);
+    this.setState({
+      selectedRecipes: this.state.selectedRecipes
+    });
+  },
   render: function() {
     return (
       <div>
-        <RecipesList recipes={recipes} selectedRecipes={this.state.selectedRecipes} />
+        <RecipesList recipes={recipes} selectedRecipes={this.state.selectedRecipes} onUserInput={this.onUserInput} />
         <ShoppingList recipes={recipes} selectedRecipes={this.state.selectedRecipes} />
       </div>
     );
@@ -36,9 +42,9 @@ var RecipesList = React.createClass({
     var recipesInputs = [];
     this.props.recipes.forEach(function(recipe) {
       if (this.props.selectedRecipes.indexOf(recipe.key) != -1) {
-        recipesInputs.push(<Recipe recipe={recipe} key={recipe.key} checked='true' />);
+        recipesInputs.push(<Recipe recipe={recipe} key={recipe.key} checked='true' onUserInput={this.props.onUserInput} />);
       } else {
-        recipesInputs.push(<Recipe recipe={recipe} key={recipe.key} />);
+        recipesInputs.push(<Recipe recipe={recipe} key={recipe.key} onUserInput={this.props.onUserInput} />);
       }
     }.bind(this));
     return (
@@ -50,11 +56,15 @@ var RecipesList = React.createClass({
 });
 
 var Recipe = React.createClass({
+  handleChange: function(event) {
+    this.props.onUserInput(event.target.id);
+  },
   render: function() {
     return (
       <p>
         <label htmlFor={this.props.recipe.key}>{this.props.recipe.name}</label>
-        <input type='checkbox' name={this.props.recipe.key} id={this.props.recipe.key} checked={this.props.checked} />
+        <input type='checkbox' name={this.props.recipe.key} id={this.props.recipe.key} checked={this.props.checked}
+          onChange={this.handleChange} />
       </p>
     );
   }
