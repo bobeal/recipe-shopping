@@ -22,7 +22,11 @@ var AggregatedShoppingList = React.createClass({
     };
   },
   onUserInput: function(recipeKey) {
-    this.state.selectedRecipes.push(recipeKey);
+    if (this.state.selectedRecipes.indexOf(recipeKey) != -1) {
+      this.state.selectedRecipes.splice(this.state.selectedRecipes.indexOf(recipeKey), 1);
+    } else {
+      this.state.selectedRecipes.push(recipeKey);
+    }
     this.setState({
       selectedRecipes: this.state.selectedRecipes
     });
